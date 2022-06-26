@@ -5,14 +5,16 @@
 //  Created by Taylor Schinvelski on 23/06/22.
 //
 
-#include <iostream>
+#include <time.h>
 #include <fstream>
+#include <iostream>
 #include <string>
+
 #include "rbtree.hpp"
 
 using namespace std;
 
-int readFile(int *array, int size) {
+int readFile(int* array, int size) {
   string folder = "./inputs/";
   string extension = ".txt";
   string filename = folder + to_string(size) + extension;
@@ -35,29 +37,38 @@ int readFile(int *array, int size) {
 }
 
 int removeRb(int size) {
+  RBTree *rbTree = new RBTree();
   int array[size];
-  
+
   try {
     readFile(array, size);
-    
+
     for (int i = 0; i < size; i++) {
-      cout << array[i] << endl;
+      rbTree->insert(array[i]);
     }
-    
+
+    clock_t ticks[2];
+    ticks[0] = clock();
+
+    for (int i = 0; i < size; i++) {
+      rbTree->remove(array[i]);
+    }
+
+    ticks[1] = clock();
+    double time = (ticks[1] - ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
+    printf("Time: %g ms.", time);
+
   } catch (const runtime_error& error) {
-    cerr << "Error: " << error.what() << std::endl;
+    cerr << "Error: " << error.what() << endl;
   }
 
+  delete rbTree;
   return 0;
 }
 
 int main() {
-  RbTree rbTree;
-  // rbTree.print();
-
-  removeRb(50);
-
+  removeRb(250000);
+  
   cout << "Done." << endl;
-
   return 0;
 }
