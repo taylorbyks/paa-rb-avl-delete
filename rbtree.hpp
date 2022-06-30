@@ -15,29 +15,29 @@
 
 using namespace std;
 
-struct Node {
+struct RBNode {
   int data;
-  Node *parent;
-  Node *left;
-  Node *right;
+  RBNode *parent;
+  RBNode *left;
+  RBNode *right;
   bool color;
 };
 
 class RBTree {
  private:
-  Node *root = (Node *)malloc(sizeof(Node));
-  Node *TNULL = (Node *)malloc(sizeof(Node));
+  RBNode *root = (RBNode *)malloc(sizeof(RBNode));
+  RBNode *TNULL = (RBNode *)malloc(sizeof(RBNode));
 
-  void leftRotate(Node *node);
-  void rightRotate(Node *node);
-  void transplant(Node *u, Node *v);
-  void fixDelete(Node *node);
-  void fixInsert(Node *node);
-  void printHelper(Node *node, string indent, bool last);
-  Node *createNode(int key);
-  Node *searchTreeHelper(Node *node, int key);
-  Node *searchTree(int key);
-  Node *maximum(Node *node);
+  void leftRotate(RBNode *node);
+  void rightRotate(RBNode *node);
+  void transplant(RBNode *u, RBNode *v);
+  void fixDelete(RBNode *node);
+  void fixInsert(RBNode *node);
+  void printHelper(RBNode *node, string indent, bool last);
+  RBNode *createNode(int key);
+  RBNode *searchTreeHelper(RBNode *node, int key);
+  RBNode *searchTree(int key);
+  RBNode *maximum(RBNode *node);
 
  public:
   RBTree();

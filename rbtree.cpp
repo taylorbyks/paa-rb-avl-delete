@@ -7,8 +7,8 @@
 
 #include "rbtree.hpp"
 
-void RBTree::leftRotate(Node *node) {
-  Node *rightNode = node->right;
+void RBTree::leftRotate(RBNode *node) {
+  RBNode *rightNode = node->right;
   node->right = rightNode->left;
 
   if (rightNode->left != TNULL) {
@@ -28,8 +28,8 @@ void RBTree::leftRotate(Node *node) {
   node->parent = rightNode;
 }
 
-void RBTree::rightRotate(Node *node) {
-  Node *leftNode = node->left;
+void RBTree::rightRotate(RBNode *node) {
+  RBNode *leftNode = node->left;
   node->left = leftNode->right;
 
   if (leftNode->right != TNULL) {
@@ -49,7 +49,7 @@ void RBTree::rightRotate(Node *node) {
   node->parent = leftNode;
 }
 
-void RBTree::transplant(Node *x, Node *y) {
+void RBTree::transplant(RBNode *x, RBNode *y) {
   if (x->parent == nullptr) {
     root = y;
   } else if (x == x->parent->left) {
@@ -60,8 +60,8 @@ void RBTree::transplant(Node *x, Node *y) {
   y->parent = x->parent;
 }
 
-void RBTree::fixDelete(Node *node) {
-  Node *current;
+void RBTree::fixDelete(RBNode *node) {
+  RBNode *current;
 
   while (node != root && node->color == BLACK) {
     if (node == node->parent->left) {
@@ -123,8 +123,8 @@ void RBTree::fixDelete(Node *node) {
   node->color = BLACK;
 }
 
-void RBTree::fixInsert(Node *node) {
-  Node *uncle;
+void RBTree::fixInsert(RBNode *node) {
+  RBNode *uncle;
 
   while (node->parent->color == RED) {
     if (node->parent == node->parent->parent->right) {
@@ -173,7 +173,7 @@ void RBTree::fixInsert(Node *node) {
   root->color = BLACK;
 }
 
-void RBTree::printHelper(Node *root, string indent, bool last) {
+void RBTree::printHelper(RBNode *root, string indent, bool last) {
   if (root != TNULL) {
     cout << indent;
     if (last) {
@@ -191,8 +191,8 @@ void RBTree::printHelper(Node *root, string indent, bool last) {
   }
 }
 
-Node *RBTree::createNode(int key) {
-  Node *node = new Node;
+RBNode *RBTree::createNode(int key) {
+  RBNode *node = new RBNode;
   node->data = key;
   node->parent = TNULL;
   node->left = TNULL;
@@ -202,7 +202,7 @@ Node *RBTree::createNode(int key) {
   return node;
 }
 
-Node *RBTree::searchTreeHelper(Node *node, int key) {
+RBNode *RBTree::searchTreeHelper(RBNode *node, int key) {
   if (node == TNULL || key == node->data) {
     return node;
   }
@@ -214,11 +214,11 @@ Node *RBTree::searchTreeHelper(Node *node, int key) {
   }
 }
 
-Node *RBTree::searchTree(int key) {
+RBNode *RBTree::searchTree(int key) {
   return searchTreeHelper(root, key);
 }
 
-Node *RBTree::maximum(Node *node) {
+RBNode *RBTree::maximum(RBNode *node) {
   while (node->right != TNULL) {
     node = node->right;
   }
@@ -226,7 +226,7 @@ Node *RBTree::maximum(Node *node) {
 }
 
 RBTree::RBTree() {
-  TNULL = new Node;
+  TNULL = new RBNode;
   TNULL->color = BLACK;
   TNULL->left = nullptr;
   TNULL->right = nullptr;
@@ -240,15 +240,10 @@ RBTree::~RBTree() {
 }
 
 void RBTree::insert(int key) {
-  if (searchTree(key) != TNULL) {
-    cout << "Key: " << key << " already present in the tree." << endl;
-    return;
-  }
+  RBNode *node = createNode(key);
 
-  Node *node = createNode(key);
-
-  Node *parent = nullptr;
-  Node *current = root;
+  RBNode *parent = nullptr;
+  RBNode *current = root;
 
   while (current != TNULL) {
     parent = current;
@@ -279,14 +274,14 @@ void RBTree::insert(int key) {
 }
 
 void RBTree::remove(int key) {
-  Node *node = searchTree(key);
+  RBNode *node = searchTree(key);
 
   if (node == TNULL) {
     cout << "Key: " << key << " can't be found" << endl;
     return;
   }
 
-  Node *x, *y;
+  RBNode *x, *y;
   bool color = node->color;
   y = node;
 
