@@ -11,6 +11,7 @@
 #include <string>
 
 #include "rbtree.hpp"
+#include "avltree.hpp"
 
 using namespace std;
 
@@ -66,8 +67,42 @@ int removeRb(int size) {
   return 0;
 }
 
+int removeAvl(int size) {
+  AVLTree *avlTree = new AVLTree();
+  int array[size];
+
+  try {
+    readFile(array, size);
+    
+    for (int i = 0; i < size; i++) {
+      avlTree->insert(array[i]);
+    }
+
+    clock_t ticks[2];
+    ticks[0] = clock();
+
+    for (int i = 0; i < size; i++) {
+      avlTree->remove(array[i]);
+    }
+
+    ticks[1] = clock();
+    double time = (ticks[1] - ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
+    printf("Time: %g ms.", time);
+
+  } catch (const runtime_error& error) {
+    cerr << "Error: " << error.what() << endl;
+  }
+  
+  avlTree->print();
+
+  delete avlTree;
+  return 0;
+}
+
 int main() {
-  removeRb(250000);
+//  removeRb(250000);
+  removeAvl(250000);
+  
   
   cout << "Done." << endl;
   return 0;
