@@ -36,6 +36,7 @@ class AVLTree {
   void doubleWithLeftChild(AVLNode *&k3);
   void doubleWithRightChild(AVLNode *&k1);
   void removeHelper(const int &x, AVLNode *&t);
+  void removePostorderHelper(AVLNode* node);
 
  public:
   AVLTree();
@@ -44,6 +45,7 @@ class AVLTree {
   void insert(const int key);
   void print();
   void remove(const int data);
+  void removePostorder();
 };
 
 #endif /* avltree_hpp */

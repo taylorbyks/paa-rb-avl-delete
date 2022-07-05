@@ -38,6 +38,7 @@ class RBTree {
   RBNode *searchTreeHelper(RBNode *node, int key);
   RBNode *searchTree(int key);
   RBNode *maximum(RBNode *node);
+  void removePostorderHelper(RBNode* node);
 
  public:
   RBTree();
@@ -46,6 +47,7 @@ class RBTree {
   void insert(int key);
   void remove(int key);
   void print();
+  void removePostorder();
 };
 
 #endif /* rbtree */

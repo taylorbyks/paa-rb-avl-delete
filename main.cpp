@@ -51,9 +51,11 @@ int removeRb(int size) {
     clock_t ticks[2];
     ticks[0] = clock();
 
-    for (int i = 0; i < size; i++) {
-      rbTree->remove(array[i]);
-    }
+//    for (int i = 0; i < size; i++) {
+//      rbTree->remove(array[i]);
+//    }
+
+    rbTree->removePostorder();
 
     ticks[1] = clock();
     double time = (ticks[1] - ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
@@ -63,7 +65,6 @@ int removeRb(int size) {
     cerr << "Error: " << error.what() << endl;
   }
 
-  delete rbTree;
   return 0;
 }
 
@@ -73,7 +74,7 @@ int removeAvl(int size) {
 
   try {
     readFile(array, size);
-    
+
     for (int i = 0; i < size; i++) {
       avlTree->insert(array[i]);
     }
@@ -81,9 +82,11 @@ int removeAvl(int size) {
     clock_t ticks[2];
     ticks[0] = clock();
 
-    for (int i = 0; i < size; i++) {
-      avlTree->remove(array[i]);
-    }
+//    for (int i = 0; i < size; i++) {
+//      avlTree->remove(array[i]);
+//    }
+
+    avlTree->removePostorder();
 
     ticks[1] = clock();
     double time = (ticks[1] - ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
@@ -92,18 +95,14 @@ int removeAvl(int size) {
   } catch (const runtime_error& error) {
     cerr << "Error: " << error.what() << endl;
   }
-  
-  avlTree->print();
 
-  delete avlTree;
   return 0;
 }
 
 int main() {
-//  removeRb(250000);
+  removeRb(250000);
   removeAvl(250000);
-  
-  
+
   cout << "Done." << endl;
   return 0;
 }

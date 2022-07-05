@@ -319,3 +319,18 @@ void RBTree::remove(int key) {
 void RBTree::print() {
   printHelper(root, "", false);
 }
+
+void RBTree::removePostorderHelper(RBNode* node) {
+  if (node == TNULL){
+    return;
+  }
+ 
+  removePostorderHelper(node->left);
+  removePostorderHelper(node->right);
+
+  delete node;
+}
+
+void RBTree::removePostorder(){
+  removePostorderHelper(root);
+}

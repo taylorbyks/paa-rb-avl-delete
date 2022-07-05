@@ -252,3 +252,18 @@ void AVLTree::doubleWithRightChild(AVLNode *&k1) {
   rotateWithLeftChild(k1->right);
   rotateWithRightChild(k1);
 }
+
+void AVLTree::removePostorderHelper(AVLNode* node) {
+  if (node == NULL){
+    return;
+  }
+
+  removePostorderHelper(node->left);
+  removePostorderHelper(node->right);
+
+  delete node;
+}
+
+void AVLTree::removePostorder(){
+  removePostorderHelper(root);
+}
