@@ -7,106 +7,24 @@
 
 #include "avltree.hpp"
 
-// void AVLTree::left_r(AVLNode* x) {
-//   AVLNode* y = x->right;
-//   x->right = y->left;
-//   if (y->left != nullptr) {
-//     y->left->parent = x;
-//   }
-//   y->parent = x->parent;
-//   if (x->parent == nullptr) {
-//     root = y;
-//   }
-//   else if (x == x->parent->left) {
-//     x->parent->left = y;
-//   }
-//   else {
-//     x->parent->right = y;
-//   }
-//   y->left = x;
-//   x->parent = y;
-
-//   x->height = x->height - 1 - max(0, y->height);
-//   y->height = y->height - 1 + min(0, x->height);
-// }
-
-// void AVLTree::right_r(AVLNode* x) {
-//   AVLNode* y = x->left;
-//   x->left = y->right;
-//   if (y->right != nullptr) {
-//     y->right->parent = x;
-//   }
-//   y->parent = x->parent;
-//   if (x->parent == nullptr) {
-//     root = y;
-//   }
-//   else if (x == x->parent->right) {
-//     x->parent->right = y;
-//   }
-//   else {
-//     x->parent->left = y;
-//   }
-//   y->right = x;
-//   x->parent = y;
-
-//   x->height = x->height + 1 - min(0, y->height);
-//   y->height = y->height + 1 + max(0, x->height);
-// }
-
-// void AVLTree::rebalance(AVLNode* n) {
-//   if ((n->height < -1) || (n->height > 1)) {
-//     if (n->height > 0) {
-//       if (n->right->height < 0) {
-//         right_r(n->right);
-//         left_r(n);
-//       }
-//       else {
-//         left_r(n);
-//       }
-//     }
-//     else if (n->height < 0) {
-//       if (n->left->height > 0) {
-//         left_r(n->left);
-//         right_r(n);
-//       }
-//       else {
-//         right_r(n);
-//       }
-//     }
-//     return;
-//   }
-//   if (n->parent != nullptr) {
-//     if (n == n->parent->left) {
-//       n->parent->height -= 1;
-//     }
-//     if (n == n->parent->right) {
-//       n->parent->height += 1;
-//     }
-//     if (n->parent->height != 0) {
-//       rebalance(n->parent);
-//     }
-//   }
-// }
-
 AVLNode *AVLTree::createNode(int key) {
   AVLNode *node = new AVLNode;
   node->data = key;
-  node->parent = nullptr;
-  node->left = nullptr;
-  node->right = nullptr;
+  node->parent = TNULL;
+  node->left = TNULL;
+  node->right = TNULL;
   node->height = 0;
 
   return node;
 }
 
-AVLNode *AVLTree::minimum(AVLNode *node) {
-  while (node->left != nullptr) {
-    node = node->left;
-  }
-  return node;
+AVLTree::AVLTree() {
+  TNULL = new AVLNode;
+  TNULL->left = nullptr;
+  TNULL->right = nullptr;
+  root = TNULL;
+  
 }
-
-AVLTree::AVLTree() { root = nullptr; }
 
 AVLTree::~AVLTree() {
   while (root != nullptr) {
@@ -136,7 +54,7 @@ void AVLTree::insert(int key) {
   AVLNode *parent = nullptr;
   AVLNode *current = root;
 
-  while (current != nullptr) {
+  while (current != TNULL) {
     parent = current;
     if (node->data < current->data) {
       current = current->left;
@@ -155,33 +73,67 @@ void AVLTree::insert(int key) {
       parent->right = node;
     }
   }
+  
+  balance(node);
 
+}
+
+AVLNode *AVLTree::maximum(AVLNode *node) {
+  while (node->right != TNULL) {
+    node = node->right;
+  }
+  return node;
+}
+
+void AVLTree::transplant(AVLNode *x, AVLNode *y) {
+  if (x->parent == nullptr) {
+    root = y;
+  } else if (x == x->parent->left) {
+    x->parent->left = y;
+  } else {
+    x->parent->right = y;
+  }
+  y->parent = x->parent;
+}
+
+void AVLTree::remove(int data) {
+  AVLNode *node = searchTree(data);
+
+  if (node == TNULL) {
+    cout << "Key: " << data << " can't be found" << endl;
+    return;
+  }
+
+  AVLNode *x, *y;
+  y = node;
+
+  if (node->left == TNULL) {
+    x = node->right;
+    transplant(node, node->right);
+  } else if (node->right == TNULL) {
+    x = node->left;
+    transplant(node, node->left);
+  } else {
+    y = maximum(node->left);
+    x = y->left;
+    if (y->parent == node) {
+      x->parent = y;
+    } else {
+      transplant(y, y->left);
+      y->left = node->left;
+      y->left->parent = y;
+    }
+
+    transplant(node, y);
+    y->right = node->right;
+    y->right->parent = y;
+  }
+  
   balance(node);
 }
 
-void AVLTree::remove(int data) { removeHelper(data, root); }
-
-void AVLTree::removeHelper(const int &x, AVLNode *&t) {
-  if (t == nullptr) return;
-
-  if (x < t->data)
-    removeHelper(x, t->left);
-  else if (t->data < x)
-    removeHelper(x, t->right);
-  else if (t->left != nullptr && t->right != nullptr) {
-    t->data = minimum(t->right)->data;
-    removeHelper(t->data, t->right);
-  } else {
-    AVLNode *oldNode = t;
-    t = (t->left != nullptr) ? t->left : t->right;
-    delete oldNode;
-  }
-
-  balance(t);
-}
-
 void AVLTree::printHelper(AVLNode *root, string indent, bool last) {
-  if (root != nullptr) {
+  if (root != TNULL) {
     cout << indent;
     if (last) {
       cout << "R----";
@@ -208,21 +160,27 @@ int AVLTree::height(AVLNode *t) {
 }
 
 void AVLTree::balance(AVLNode *&t) {
-  if (t == nullptr) return;
+  if (t != TNULL) {
 
-  if (height(t->left) - height(t->right) > 1)
-    if (height(t->left->left) >= height(t->left->right))
-      rotateWithLeftChild(t);
-    else
-      doubleWithLeftChild(t);
-  else if (height(t->right) - height(t->left) > 1)
-    if (height(t->right->right) >= height(t->right->left)) {
-      rotateWithRightChild(t);
-    } else {
-      doubleWithRightChild(t);
+    if (height(t->left) - height(t->right) > 1){
+      if (height(t->left->left) >= height(t->left->right)){
+          rotateWithLeftChild(t);
+      }
+      else {
+        doubleWithLeftChild(t);
+      }
+    }
+      
+    else if (height(t->right) - height(t->left) > 1){
+      if (height(t->right->right) >= height(t->right->left)) {
+        rotateWithRightChild(t);
+      } else {
+        doubleWithRightChild(t);
+      }
     }
 
-  t->height = max(height(t->left), height(t->right)) + 1;
+    t->height = max(height(t->left), height(t->right)) + 1;
+  }
 }
 
 void AVLTree::rotateWithLeftChild(AVLNode *&k2) {
@@ -254,14 +212,12 @@ void AVLTree::doubleWithRightChild(AVLNode *&k1) {
 }
 
 void AVLTree::removePostorderHelper(AVLNode* node) {
-  if (node == NULL){
-    return;
+  if (node != TNULL) {
+    removePostorderHelper(node->left);
+    removePostorderHelper(node->right);
+    
+    delete node;
   }
-
-  removePostorderHelper(node->left);
-  removePostorderHelper(node->right);
-
-  delete node;
 }
 
 void AVLTree::removePostorder(){

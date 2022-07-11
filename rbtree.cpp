@@ -321,14 +321,12 @@ void RBTree::print() {
 }
 
 void RBTree::removePostorderHelper(RBNode* node) {
-  if (node == TNULL){
-    return;
+  if (node != TNULL) {
+    removePostorderHelper(node->left);
+    removePostorderHelper(node->right);
+    
+    delete node;
   }
- 
-  removePostorderHelper(node->left);
-  removePostorderHelper(node->right);
-
-  delete node;
 }
 
 void RBTree::removePostorder(){

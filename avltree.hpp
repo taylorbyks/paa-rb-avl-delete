@@ -23,11 +23,12 @@ struct AVLNode {
 class AVLTree {
   AVLNode *root = (AVLNode *)malloc(sizeof(AVLNode));
   AVLNode *TNULL = (AVLNode *)malloc(sizeof(AVLNode));
-
+  
   AVLNode *searchTreeHelper(AVLNode *node, int key);
   AVLNode *searchTree(int key);
   AVLNode *createNode(int key);
-  AVLNode *minimum(AVLNode *n);
+  AVLNode *maximum(AVLNode *node);
+  void transplant(AVLNode *u, AVLNode *v);
   void printHelper(AVLNode *root, string indent, bool last);
   int height(AVLNode *t);
   void balance(AVLNode *&t);
@@ -35,7 +36,6 @@ class AVLTree {
   void rotateWithRightChild(AVLNode *&k1);
   void doubleWithLeftChild(AVLNode *&k3);
   void doubleWithRightChild(AVLNode *&k1);
-  void removeHelper(const int &x, AVLNode *&t);
   void removePostorderHelper(AVLNode* node);
 
  public:
